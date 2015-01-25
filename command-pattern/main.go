@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type Command interface {
 	exec()
@@ -10,9 +13,11 @@ type PrintHello struct {
 }
 
 func (p *PrintHello) exec() {
-
-	fmt.Println("kaixo")
-
+	for {
+		fmt.Println("kaixo")
+		time.Sleep(5 * time.Second)
+		fmt.Println("agur")
+	}
 }
 
 func NewPrintHello() Command {
@@ -41,7 +46,8 @@ func startCommander() <-chan Command {
 }
 
 func slave(commandChannel <-chan Command) {
-	cc := <-commandChannel
-	cc.exec()
-
+	for {
+		cc := <-commandChannel
+		cc.exec()
+	}
 }
