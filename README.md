@@ -1,2 +1,2 @@
 # go-spikes
-repository for hold all my go lang spikes 
+repository to  hold all my go lang spikes 
