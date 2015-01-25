@@ -22,8 +22,7 @@ func NewPrintHello() Command {
 func main() {
 
 	commandChannel := startCommander()
-	c := <-commandChannel
-	c.exec()
+	slave(commandChannel)
 }
 
 func startCommander() <-chan Command {
@@ -38,5 +37,11 @@ func startCommander() <-chan Command {
 	}()
 
 	return command
+
+}
+
+func slave(commandChannel <-chan Command) {
+	cc := <-commandChannel
+	cc.exec()
 
 }
