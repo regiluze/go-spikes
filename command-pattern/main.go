@@ -2,17 +2,28 @@ package main
 
 import "fmt"
 
-type Command interface{}
+type Command interface {
+	exec()
+}
 
-func NewCommand() {
-	return Command{}
+type PrintHello struct {
+}
+
+func (p *PrintHello) exec() {
+
+	fmt.Println("kaixo")
+
+}
+
+func NewPrintHello() Command {
+	return &PrintHello{}
 }
 
 func main() {
 
-	fmt.Println("kaixo")
-	command := startCommander()
-
+	commandChannel := startCommander()
+	c := <-commandChannel
+	c.exec()
 }
 
 func startCommander() <-chan Command {
@@ -21,7 +32,7 @@ func startCommander() <-chan Command {
 	command := make(chan Command)
 
 	go func() {
-		c := NewCommand{}
+		c := NewPrintHello()
 		command <- c
 
 	}()
