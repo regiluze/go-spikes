@@ -19,7 +19,18 @@ type Data struct {
 	Msg string
 }
 
-func handler(w http.ResponseWriter, r *http.Request) {
+type CommandHandler struct {
+	CommandChannel chan Command
+}
+
+func NewCommandHandler() *CommandHandler {
+
+	ch := &CommandHandler{CommandChannel: make(chan Command)}
+	return ch
+
+}
+
+func (ch *CommandHandler) handler(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "PUT" {
 		decoder := json.NewDecoder(r.Body)
 		var d Data
@@ -28,14 +39,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			panic(err)
 		}
 		fmt.Println(d)
-		fmt.Println("msg:", d.Msg)
+		c := NewPrintHello(d.Msg)
+		ch.CommandChannel <- c
 	}
 }
 
-func (s *Server) start() {
+func (s *Server) start() <-chan Command {
+	ch := NewCommandHandler()
 	go func() {
-		http.HandleFunc("/commander", handler)
+		http.HandleFunc("/commander", ch.handler)
 		http.ListenAndServe(":8080", nil)
 	}()
-
+	return ch.CommandChannel
 }

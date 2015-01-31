@@ -2,22 +2,18 @@ package main
 
 import (
 	"fmt"
-	"time"
 )
 
 type PrintHello struct {
+	Msg string
 }
 
 func (p *PrintHello) exec() {
-	for {
-		fmt.Println("kaixo")
-		time.Sleep(5 * time.Second)
-		fmt.Println("agur")
-	}
+	fmt.Println("command:", p.Msg)
 }
 
-func NewPrintHello() Command {
-	return &PrintHello{}
+func NewPrintHello(message string) Command {
+	return &PrintHello{Msg: message}
 }
 
 type Master struct{}
@@ -36,7 +32,7 @@ func (m *Master) start() <-chan Command {
 	command := make(chan Command)
 
 	go func() {
-		c := NewPrintHello()
+		c := NewPrintHello("static")
 		command <- c
 
 	}()
