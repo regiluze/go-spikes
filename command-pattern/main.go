@@ -5,10 +5,6 @@ import (
 	"time"
 )
 
-type Command interface {
-	exec()
-}
-
 type PrintHello struct {
 }
 
@@ -26,23 +22,9 @@ func NewPrintHello() Command {
 
 func main() {
 
-	commandChannel := startCommander()
+	master := NewMaster()
+	commandChannel := master.start()
 	slave(commandChannel)
-}
-
-func startCommander() <-chan Command {
-
-	fmt.Println("commander started")
-	command := make(chan Command)
-
-	go func() {
-		c := NewPrintHello()
-		command <- c
-
-	}()
-
-	return command
-
 }
 
 func slave(commandChannel <-chan Command) {
