@@ -1,8 +1,26 @@
 package main
 
+type PrintHelloCommandFactory struct {
+}
+
+func NewPrintHelloCommandFactory() *PrintHelloCommandFactory {
+
+	commandFactory := &PrintHelloCommandFactory{}
+	return commandFactory
+
+}
+
+func (commandFactory *PrintHelloCommandFactory) Get(msg string) Command {
+
+	c := NewPrintHello(msg)
+	return c
+
+}
+
 func main() {
-	slave := NewSlave()
+	httpSlave := NewSlave()
+	commandFactory := NewPrintHelloCommandFactory()
 	server := NewServer()
-	commandChannel := server.start()
-	slave.start(commandChannel)
+	httpCommandChannel := server.start(commandFactory)
+	httpSlave.start(httpCommandChannel)
 }
