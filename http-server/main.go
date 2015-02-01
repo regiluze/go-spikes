@@ -2,17 +2,42 @@ package main
 
 import (
 	"fmt"
+	"io"
+	"io/ioutil"
 	"net/http"
+	"text/template"
 )
 
-func handle(w http.ResponseWriter, r *http.Request) {
+var uploadTemplate = template.Must(template.ParseFiles("index.html"))
 
-	fmt.Fprint(w, "kaixo")
+func handle(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		uploadTemplate.Execute(w, nil)
+		return
+	}
+	f, _, err := r.FormFile("image")
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	defer f.Close()
+	t, err := ioutil.TempFile(".", "image-")
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	defer t.Close()
+	if _, err := io.Copy(t, f); err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+	http.Redirect(w, r, "/view?id="+t.Name()[6:], 302)
 }
 
 func main() {
-
+	fmt.Println("kaixo")
 	http.HandleFunc("/", handle)
-	http.ListenAndServe("8080:", nil)
+	http.ListenAndServe(":8080", nil)
+	fmt.Println("agur")
 
 }
