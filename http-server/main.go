@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -12,27 +12,27 @@ import (
 var uploadTemplate = template.Must(template.ParseFiles("index.html"))
 var errorTemplate = template.Must(template.ParseFiles("error.html"))
 
+func check(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func upload(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		uploadTemplate.Execute(w, nil)
 		return
 	}
-	f, _, err := r.FormFile("image")
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	//f, _, err := r.FormFile("image")
+	//check(err)
+	f, err := os.Open("filename.ext")
+	check(err)
 	defer f.Close()
 	t, err := ioutil.TempFile(".", "image-")
-	if err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	check(err)
 	defer t.Close()
-	if _, err := io.Copy(t, f); err != nil {
-		http.Error(w, err.Error(), 500)
-		return
-	}
+	_, copyErr := io.Copy(t, f)
+	check(copyErr)
 	http.Redirect(w, r, "/view?id="+t.Name()[6:], 302)
 }
 
@@ -45,7 +45,7 @@ func errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if recoverErr := recover(); recoverErr != nil {
-				fmt.Fprintf(os.Stderr, "were panicing: %s\n", recoverErr)
+				//io.WriteString(w, recoverErr)
 				w.WriteHeader(500)
 				errorTemplate.Execute(w, recoverErr)
 			}
