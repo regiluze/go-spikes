@@ -1,13 +1,24 @@
 package main
 
 import (
-	//"fmt"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"text/template"
 )
+
+type ServerError struct {
+	Msg string
+}
+
+func NewError(msg string) *ServerError {
+
+	s := &ServerError{Msg: msg}
+	return s
+
+}
 
 var uploadTemplate = template.Must(template.ParseFiles("index.html"))
 var errorTemplate = template.Must(template.ParseFiles("error.html"))
@@ -45,9 +56,9 @@ func errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if recoverErr := recover(); recoverErr != nil {
-				//io.WriteString(w, recoverErr)
+				error := NewError(fmt.Sprintf("\"%v\"", recoverErr))
 				w.WriteHeader(500)
-				errorTemplate.Execute(w, recoverErr)
+				errorTemplate.Execute(w, error)
 			}
 		}()
 		fn(w, r)
