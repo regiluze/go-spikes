@@ -34,9 +34,7 @@ func upload(w http.ResponseWriter, r *http.Request) {
 		uploadTemplate.Execute(w, nil)
 		return
 	}
-	//f, _, err := r.FormFile("image")
-	//check(err)
-	f, err := os.Open("filename.ext")
+	f, _, err := r.FormFile("image")
 	check(err)
 	defer f.Close()
 	t, err := ioutil.TempFile(".", "image-")
