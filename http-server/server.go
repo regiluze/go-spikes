@@ -62,15 +62,17 @@ func errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-type Server struct{}
+type Server struct {
+	port string
+}
 
-func NewServer() *Server {
-	s := &Server{}
+func NewServer(p string) *Server {
+	s := &Server{port: p}
 	return s
 }
 
 func (s *Server) Start() {
 	http.HandleFunc("/", errorHandler(upload))
 	http.HandleFunc("/view", errorHandler(view))
-	http.ListenAndServe(":8080", nil)
+	http.ListenAndServe(fmt.Sprintf(":%s", s.port), nil)
 }
