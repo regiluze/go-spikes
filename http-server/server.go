@@ -38,17 +38,17 @@ func upload(w http.ResponseWriter, r *http.Request) {
 	f, _, err := r.FormFile("image")
 	check(err)
 	defer f.Close()
-	t, err := ioutil.TempFile(".", "image-")
+	t, err := ioutil.TempFile(".", "/static/img/image-")
 	check(err)
 	defer t.Close()
 	_, copyErr := io.Copy(t, f)
 	check(copyErr)
-	http.Redirect(w, r, "/view?id="+t.Name()[6:], 302)
+	http.Redirect(w, r, "/view?id="+t.Name()[17:], 302)
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image")
-	http.ServeFile(w, r, "image-"+r.FormValue("id"))
+	http.ServeFile(w, r, "static/img/image-"+r.FormValue("id"))
 }
 
 func errorHandler(fn http.HandlerFunc) http.HandlerFunc {
@@ -78,6 +78,7 @@ func (s *Server) Start() error {
 	r := mux.NewRouter()
 	r.HandleFunc("/", errorHandler(upload))
 	r.HandleFunc("/view", errorHandler(view))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", r)
 	return http.ListenAndServe(fmt.Sprintf("%s:%s", s.address, s.port), nil)
 }
