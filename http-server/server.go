@@ -63,16 +63,18 @@ func errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 type Server struct {
-	port string
+	port    string
+	address string
 }
 
-func NewServer(p string) *Server {
-	s := &Server{port: p}
+func NewServer(a string, p string) *Server {
+	s := &Server{address: a, port: p}
 	return s
 }
 
-func (s *Server) Start() {
+func (s *Server) Start() error {
+	fmt.Println("egi", s.address, s.port)
 	http.HandleFunc("/", errorHandler(upload))
 	http.HandleFunc("/view", errorHandler(view))
-	http.ListenAndServe(fmt.Sprintf(":%s", s.port), nil)
+	return http.ListenAndServe(fmt.Sprintf("%s:%s", s.address, s.port), nil)
 }
