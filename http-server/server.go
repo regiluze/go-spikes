@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"text/template"
+
+	"github.com/gorilla/mux"
 )
 
 type ServerError struct {
@@ -73,8 +75,9 @@ func NewServer(a string, p string) *Server {
 }
 
 func (s *Server) Start() error {
-	fmt.Println("egi", s.address, s.port)
-	http.HandleFunc("/", errorHandler(upload))
-	http.HandleFunc("/view", errorHandler(view))
+	r := mux.NewRouter()
+	r.HandleFunc("/", errorHandler(upload))
+	r.HandleFunc("/view", errorHandler(view))
+	http.Handle("/", r)
 	return http.ListenAndServe(fmt.Sprintf("%s:%s", s.address, s.port), nil)
 }
