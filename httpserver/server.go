@@ -33,7 +33,7 @@ type routeHandler interface {
 
 type errHandler func(http.HandlerFunc) http.HandlerFunc
 
-func (s *Server) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
+func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if recoverErr := recover(); recoverErr != nil {
@@ -46,7 +46,7 @@ func (s *Server) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	}
 }
 
-func (s *Server) Start() error {
+func (s *HttpServer) Start() error {
 	r := s.handler.HandleRoutes(s.errorHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", r)
