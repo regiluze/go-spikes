@@ -55,6 +55,8 @@ func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 				w.WriteHeader(500)
 				if s.errTemplate != nil {
 					s.errTemplate.Execute(w, error)
+				} else {
+					fmt.Fprintf(w, fmt.Sprintf("\"%v\"", recoverErr))
 				}
 			}
 		}()
@@ -66,6 +68,8 @@ func (s *HttpServer) NotFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(404)
 	if s.notFoundTemplate != nil {
 		s.notFoundTemplate.Execute(w, nil)
+	} else {
+		fmt.Fprintf(w, "Not found")
 	}
 
 }
