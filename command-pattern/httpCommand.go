@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/gorilla/mux"
+	"github.com/regiluze/go-spikes/httpserver"
 )
 
 type CommandFactory interface {
@@ -41,10 +44,9 @@ func (ch *CommandHandler) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ch *CommandHandler) HandleRoutes(errFunc errHandler) *mux.Router {
+func (ch *CommandHandler) HandleRoutes(errFunc httpserver.ErrHandler) *mux.Router {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", errFunc(ch.handler))
 	return r
-
 }

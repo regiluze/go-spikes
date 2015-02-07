@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/regiluze/go-spikes/httpserver"
 )
 

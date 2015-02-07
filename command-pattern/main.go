@@ -20,7 +20,7 @@ func (commandFactory *PrintHelloCommandFactory) Get(msg string) Command {
 func main() {
 	httpSlave := NewSlave()
 	commandFactory := NewPrintHelloCommandFactory()
-	server := NewServer()
+	server := NewCommandServer()
 	httpCommandChannel := server.start(commandFactory)
 	httpSlave.start(httpCommandChannel)
 }
