@@ -47,7 +47,7 @@ func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 			if recoverErr := recover(); recoverErr != nil {
 				error := NewError(fmt.Sprintf("\"%v\"", recoverErr))
 				w.WriteHeader(500)
-				if s.errTemplate != nil {
+				if s.errTemplate {
 					errTemplate.Execute(w, error)
 				}
 			}
