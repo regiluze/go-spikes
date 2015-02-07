@@ -14,6 +14,7 @@ func main() {
 	uploadHandler := NewImageUploadHandler()
 	server := httpserver.NewHttpServer(uploadHandler, *address, *port)
 	server.SetErrTemplate(ErrorTemplate)
+	//	server.SetNotFoundTemplate(NotFoundTemplate)
 	error := server.Start()
 	if error != nil {
 		fmt.Println(error)

@@ -10,8 +10,9 @@ import (
 	"github.com/regiluze/go-spikes/httpserver"
 )
 
-var uploadTemplate = template.Must(template.ParseFiles("index.html"))
-var ErrorTemplate = template.Must(template.ParseFiles("error.html"))
+var uploadTemplate = template.Must(template.ParseFiles("html/index.html"))
+var ErrorTemplate = template.Must(template.ParseFiles("html/error500.html"))
+var NotFoundTemplate = template.Must(template.ParseFiles("html/error404.html"))
 
 func check(err error) {
 	if err != nil {
