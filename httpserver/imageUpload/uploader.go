@@ -7,10 +7,11 @@ import (
 	"text/template"
 
 	"github.com/gorilla/mux"
+	"github.com/regiluze/go-spikes/httpserver"
 )
 
 var uploadTemplate = template.Must(template.ParseFiles("index.html"))
-var errorTemplate = template.Must(template.ParseFiles("error.html"))
+var ErrorTemplate = template.Must(template.ParseFiles("error.html"))
 
 func check(err error) {
 	if err != nil {
@@ -49,7 +50,7 @@ func (iuh *ImageUploaderHandler) view(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/img/image-"+r.FormValue("id"))
 }
 
-func (iuh *ImageUploaderHandler) HandleRoutes(errFunc ErrHandler) *mux.Router {
+func (iuh *ImageUploaderHandler) HandleRoutes(errFunc httpserver.ErrHandler) *mux.Router {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", errFunc(iuh.upload))

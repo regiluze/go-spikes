@@ -13,6 +13,7 @@ func main() {
 	flag.Parse()
 	uploadHandler := httpserver.NewImageUploadHandler()
 	server := httpserver.NewHttpServer(uploadHandler, *address, *port)
+	server.SetErrTemplate(ErrorTemplate)
 	error := server.Start()
 	if error != nil {
 		fmt.Println(error)

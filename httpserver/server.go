@@ -3,6 +3,7 @@ package httpserver
 import (
 	"fmt"
 	"net/http"
+	"text/template"
 
 	"github.com/gorilla/mux"
 )
@@ -17,9 +18,10 @@ func NewError(msg string) *ServerError {
 }
 
 type HttpServer struct {
-	port    string
-	address string
-	handler routeHandler
+	port        string
+	address     string
+	handler     routeHandler
+	errTemplate template.Template
 }
 
 func NewHttpServer(h routeHandler, a string, p string) *HttpServer {
@@ -33,13 +35,21 @@ type routeHandler interface {
 
 type ErrHandler func(http.HandlerFunc) http.HandlerFunc
 
+func (s *HttpServer) SetErrTemplate(t template.Template) {
+
+	s.errTemplate = t
+
+}
+
 func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if recoverErr := recover(); recoverErr != nil {
 				error := NewError(fmt.Sprintf("\"%v\"", recoverErr))
 				w.WriteHeader(500)
-				errorTemplate.Execute(w, error)
+				if s.errorTemplate != nil {
+					errorTemplate.Execute(w, error)
+				}
 			}
 		}()
 		fn(w, r)
