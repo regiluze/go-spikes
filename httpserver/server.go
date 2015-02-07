@@ -51,10 +51,11 @@ func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		defer func() {
 			if recoverErr := recover(); recoverErr != nil {
-				fmt.Println("egi code>> recover")
 				error := NewError(fmt.Sprintf("\"%v\"", recoverErr))
 				w.WriteHeader(500)
-				s.errTemplate.Execute(w, error)
+				if s.errTemplate != nil {
+					s.errTemplate.Execute(w, error)
+				}
 			}
 		}()
 		fn(w, r)
@@ -62,9 +63,10 @@ func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 }
 func (s *HttpServer) NotFound(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("egi not found")
 	w.WriteHeader(404)
-	s.notFoundTemplate.Execute(w, nil)
+	if s.notFoundTemplate != nil {
+		s.notFoundTemplate.Execute(w, nil)
+	}
 
 }
 
