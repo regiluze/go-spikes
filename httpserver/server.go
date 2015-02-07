@@ -21,7 +21,7 @@ type HttpServer struct {
 	port        string
 	address     string
 	handler     routeHandler
-	errTemplate template.Template
+	errTemplate *template.Template
 }
 
 func NewHttpServer(h routeHandler, a string, p string) *HttpServer {
@@ -35,7 +35,7 @@ type routeHandler interface {
 
 type ErrHandler func(http.HandlerFunc) http.HandlerFunc
 
-func (s *HttpServer) SetErrTemplate(t template.Template) {
+func (s *HttpServer) SetErrTemplate(t *template.Template) {
 
 	s.errTemplate = t
 
