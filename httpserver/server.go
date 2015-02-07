@@ -31,7 +31,7 @@ type routeHandler interface {
 	HandleRoutes(errHandler) *mux.Router
 }
 
-type errHandler func(http.HandlerFunc) http.HandlerFunc
+type ErrHandler func(http.HandlerFunc) http.HandlerFunc
 
 func (s *HttpServer) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

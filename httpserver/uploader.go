@@ -49,7 +49,7 @@ func (iuh *ImageUploaderHandler) view(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "static/img/image-"+r.FormValue("id"))
 }
 
-func (iuh *ImageUploaderHandler) HandleRoutes(errFunc errHandler) *mux.Router {
+func (iuh *ImageUploaderHandler) HandleRoutes(errFunc ErrHandler) *mux.Router {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", errFunc(iuh.upload))
