@@ -1,23 +1,33 @@
 package main
 
 import (
-	"net/http"
+	"github.com/regiluze/go-spikes/httpserver"
 )
 
-type Server struct {
+const (
+	ADDRESS = "0.0.0.0"
+	PORT    = "8080"
+)
+
+type CommandServer struct {
 }
 
-func NewServer() *Server {
-	s := &Server{}
+func NewCommandServer() *CommandServer {
+	s := &CommandServer{}
 	return s
 
 }
 
-func (s *Server) start(cf CommandFactory) <-chan Command {
+func (s *CommandServer) start(cf CommandFactory) <-chan Command {
 	ch := NewCommandHandler(cf)
 	go func() {
-		http.HandleFunc("/commander", ch.handler)
-		http.ListenAndServe(":8080", nil)
+		httpserver := httpserver.NewHttpServer(ch, ADDRESS, PORT)
+		err := httpserver.Start()
+		if err != nil {
+			fmt.Println(err)
+		}
+		//http.HandleFunc("/commander", ch.handler)
+		//http.ListenAndServe(":8080", nil)
 	}()
 	return ch.CommandChannel
 }

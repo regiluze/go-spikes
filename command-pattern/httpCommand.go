@@ -40,3 +40,11 @@ func (ch *CommandHandler) handler(w http.ResponseWriter, r *http.Request) {
 		ch.CommandChannel <- c
 	}
 }
+
+func (ch *CommandHandler) HandleRoutes(errFunc errHandler) *mux.Router {
+
+	r := mux.NewRouter()
+	r.HandleFunc("/", errFunc(ch.handler))
+	return r
+
+}
