@@ -19,15 +19,16 @@ func NewError(msg string) *ServerError {
 type Server struct {
 	port    string
 	address string
+	handler routeHandler
 }
 
-func NewServer(a string, p string) *Server {
-	s := &Server{address: a, port: p}
+func NewServer(h routeHandler, a string, p string) *Server {
+	s := &Server{handler: h, address: a, port: p}
 	return s
 }
 
 type routeHandler interface {
-	HandleRoutes(errHandler) mux.Router
+	HandleRoutes(errHandler) *mux.Router
 }
 
 type errHandler func(http.HandlerFunc) http.HandlerFunc
@@ -46,8 +47,7 @@ func (s *Server) errorHandler(fn http.HandlerFunc) http.HandlerFunc {
 }
 
 func (s *Server) Start() error {
-	uploadHandler := NewImageUploadHandler()
-	r := uploadHandler.HandleRoutes(s.errorHandler)
+	r := s.handler.HandleRoutes(s.errorHandler)
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	http.Handle("/", r)
 	return http.ListenAndServe(fmt.Sprintf("%s:%s", s.address, s.port), nil)
