@@ -28,7 +28,7 @@ func NewHttpServer(h routeHandler, a string, p string) *HttpServer {
 }
 
 type routeHandler interface {
-	HandleRoutes(errHandler) *mux.Router
+	HandleRoutes(ErrHandler) *mux.Router
 }
 
 type ErrHandler func(http.HandlerFunc) http.HandlerFunc
