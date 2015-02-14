@@ -28,8 +28,6 @@ func (s *CommandServer) start(cf CommandFactory) <-chan Command {
 		if err != nil {
 			fmt.Println(err)
 		}
-		//http.HandleFunc("/commander", ch.handler)
-		//http.ListenAndServe(":8080", nil)
 	}()
 	return ch.CommandChannel
 }

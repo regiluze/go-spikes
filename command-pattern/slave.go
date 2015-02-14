@@ -1,6 +1,7 @@
 package main
 
 type Slave struct {
+	mainChan chan Command
 }
 
 func NewSlave() *Slave {
@@ -8,9 +9,16 @@ func NewSlave() *Slave {
 	return s
 }
 
-func (s *Slave) start(commandChannel <-chan Command) {
+func (s *Slave) AddMaster(cs ...<-chan Command) {
+	s.mainChan = make(chan Command)
+	for _, c := range cs {
+		s.mainChan <- c
+	}
+}
+
+func (s *Slave) Start() {
 	for {
-		cc := <-commandChannel
+		cc := <-s.mainChan
 		cc.exec()
 	}
 }

@@ -18,9 +18,11 @@ func (commandFactory *PrintHelloCommandFactory) Get(msg string) Command {
 }
 
 func main() {
-	httpSlave := NewSlave()
 	commandFactory := NewPrintHelloCommandFactory()
 	server := NewCommandServer()
 	httpCommandChannel := server.start(commandFactory)
-	httpSlave.start(httpCommandChannel)
+
+	httpSlave := NewSlave()
+	httpSlave.AddMaster(httpCommandChannel)
+	httpSlave.Start()
 }
