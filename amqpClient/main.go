@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/aleasoluciones/simpleamqp"
 )
@@ -11,6 +12,7 @@ import (
 type Message struct {
 	Name string `json:"name"`
 	Id   string `json:"id"`
+	Msg  string `json:msg`
 }
 
 func main() {
@@ -19,12 +21,15 @@ func main() {
 	topic := flag.String("topic", "test", "topic")
 	flag.Parse()
 
-	m := &Message{Name: "", Id: ""}
+	m := &Message{Name: "", Id: "", Msg: "kaxo from rabbit"}
 	json, _ := json.Marshal(m)
-
+	fmt.Println("exchage:", *exchange)
+	fmt.Println("topic:", *topic)
 	amqpPublisher := simpleamqp.NewAmqpPublisher(*amqp, *exchange)
 	amqpPublisher.Publish(*topic, []byte(json))
 
 	fmt.Println("message published!", m)
+
+	time.Sleep(2 * time.Second)
 
 }

@@ -22,10 +22,10 @@ func main() {
 	server := NewCommandServer()
 	httpCommandChannel := server.start(commandFactory)
 
-	amqpMaster := NewAmqpMaster()
-	amqpMaster.start(commandFactory)
+	amqpMaster := NewAmqpMaster("amqp://guest:guest@localhost/")
+	amqpCommandChannel := amqpMaster.start(commandFactory)
 
 	httpSlave := NewSlave()
-	httpSlave.AddMaster(httpCommandChannel)
+	httpSlave.AddMaster(httpCommandChannel, amqpCommandChannel)
 	httpSlave.Start()
 }
