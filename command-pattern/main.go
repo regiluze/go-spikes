@@ -22,6 +22,9 @@ func main() {
 	server := NewCommandServer()
 	httpCommandChannel := server.start(commandFactory)
 
+	amqpMaster := NewAmqpMaster()
+	amqpMaster.start(commandFactory)
+
 	httpSlave := NewSlave()
 	httpSlave.AddMaster(httpCommandChannel)
 	httpSlave.Start()
