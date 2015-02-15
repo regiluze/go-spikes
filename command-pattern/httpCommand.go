@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/regiluze/httpserver"
 )
 
@@ -44,7 +43,8 @@ func (ch *CommandHandler) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ch *CommandHandler) HandleRoutes(context string, r *mux.Router, errFunc httpserver.ErrHandler) *mux.Router {
-	r.HandleFunc(fmt.Sprintf("%s/", context), errFunc(ch.handler))
-	return r
+func (ch *CommandHandler) GetRoutes() []*httpserver.Route {
+	root := httpserver.NewRoute("", ch.handler)
+	routes := []*httpserver.Route{root}
+	return routes
 }
