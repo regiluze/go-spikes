@@ -30,21 +30,19 @@ func NewCommandHandler(cf CommandFactory) *CommandHandler {
 }
 
 func (ch *CommandHandler) handler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "PUT" {
-		decoder := json.NewDecoder(r.Body)
-		var d Data
-		err := decoder.Decode(&d)
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(d)
-		c := ch.Factory.Get(d.Msg)
-		ch.CommandChannel <- c
+	decoder := json.NewDecoder(r.Body)
+	var d Data
+	err := decoder.Decode(&d)
+	if err != nil {
+		panic(err)
 	}
+	fmt.Println(d)
+	c := ch.Factory.Get(d.Msg)
+	ch.CommandChannel <- c
 }
 
 func (ch *CommandHandler) GetRoutes() []*httpserver.Route {
-	root := httpserver.NewRoute("", ch.handler)
+	root := httpserver.NewRoute("", httpserver.PutMethod, ch.handler)
 	routes := []*httpserver.Route{root}
 	return routes
 }
