@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/regiluze/go-spikes/httpserver"
+	"github.com/regiluze/httpserver"
 )
 
 type CommandFactory interface {
@@ -44,9 +44,7 @@ func (ch *CommandHandler) handler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (ch *CommandHandler) HandleRoutes(errFunc httpserver.ErrHandler) *mux.Router {
-
-	r := mux.NewRouter()
-	r.HandleFunc("/", errFunc(ch.handler))
+func (ch *CommandHandler) HandleRoutes(context string, r *mux.Router, errFunc httpserver.ErrHandler) *mux.Router {
+	r.HandleFunc(fmt.Sprintf("%s/", context), errFunc(ch.handler))
 	return r
 }

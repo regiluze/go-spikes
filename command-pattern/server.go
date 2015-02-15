@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/regiluze/go-spikes/httpserver"
+	"github.com/regiluze/httpserver"
 )
 
 const (
@@ -23,7 +23,8 @@ func NewCommandServer() *CommandServer {
 func (s *CommandServer) start(cf CommandFactory) <-chan Command {
 	ch := NewCommandHandler(cf)
 	go func() {
-		httpserver := httpserver.NewHttpServer(ch, ADDRESS, PORT)
+		httpserver := httpserver.NewHttpServer(ADDRESS, PORT)
+		httpserver.DeployAtBase(ch)
 		err := httpserver.Start()
 		if err != nil {
 			fmt.Println(err)
